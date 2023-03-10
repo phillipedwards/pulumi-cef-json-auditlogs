@@ -1,0 +1,4 @@
+config:
+  aws:profile: pulumi-ce
+  aws:region: us-west-2
+  cef-json-converter:aws-account-id: 058607598222

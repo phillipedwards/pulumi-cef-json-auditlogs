@@ -1,0 +1,47 @@
+{
+    "Statement": [
+        {
+            "Action": [
+                "s3:GetBucketLocation"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:s3:::"
+            ]
+        },
+        {
+            "Action": [
+                "s3:PutObject",
+                "s3:PutObjectAcl",
+                "s3:AbortMultipartUpload"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:s3::://",
+                "arn:aws:s3::://*"
+            ]
+        }
+    ],
+    "Version": "2012-10-17"
+}
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "sts:AssumeRole"
+            ],
+            "Resource": null,
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "058607598222"
+            },
+            "Condition": {
+                "StringEquals": {
+                    "sts:ExternalId": "demo"
+                }
+            }
+        }
+    ]
+}
