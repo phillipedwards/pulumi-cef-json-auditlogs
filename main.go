@@ -28,23 +28,38 @@ func main() {
 			logPath = "pulumi-audit-logs"
 		}
 
+		bucketId := cfg.Get("cef-bucket")
+		var bucketIdOutput pulumi.IDOutput
+		if bucketId != "" {
+			bucketIdOutput = pulumi.ID(bucketId).ToIDOutput()
+		} else {
+			cefBucket, err := NewPulumiAuditLogBucket(ctx, "cef-bucket", &PulumiAuditLogBucketArgs{
+				LogPath:   logPath,
+				AccountId: accountId,
+			})
+
+			if err != nil {
+				return err
+			}
+
+			bucketIdOutput = cefBucket.CefBucketId
+		}
+
 		jsonBucket, err := s3.NewBucketV2(ctx, "pulumi-json-export-bucket", &s3.BucketV2Args{}, pulumi.Protect(true))
 		if err != nil {
 			return err
 		}
 
-		cefBucket, err := NewPulumiAuditLogBucket(ctx, "cef-bucket", &PulumiAuditLogBucketArgs{
-			LogPath:   logPath,
-			AccountId: accountId,
+		converterLambda, err := NewCefToJsonLambda(ctx, "cef-json-conv", &CefToJsonLambdaArgs{
+			sourceBucketId: bucketIdOutput,
 		})
 
 		if err != nil {
 			return err
 		}
 
-		ctx.Export("cef", cefBucket.CefBucketId)
+		ctx.Export("cef", bucketIdOutput)
 		ctx.Export("json", jsonBucket.ID())
-		ctx.Export("exporter-role", cefBucket.RoleArn)
 		return nil
 	})
 }
