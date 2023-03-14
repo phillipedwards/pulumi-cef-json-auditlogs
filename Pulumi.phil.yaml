@@ -1,4 +1,5 @@
 config:
   aws:profile: pulumi-ce
   aws:region: us-west-2
-  cef-json-converter:aws-account-id: 058607598222
+  cef-json-converter:pulumi-source-account-id: "058607598222"
+  pulumi:disable-default-providers: ["*"]
